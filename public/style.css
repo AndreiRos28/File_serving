@@ -29,4 +29,8 @@ footer {
     margin-top: 20px;
 }
 
+input[type="file"] {
+    visibility: visible;
+    position: relative; /* Ensure it's not hidden or positioned off-screen */
+}
 
