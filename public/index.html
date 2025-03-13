@@ -15,9 +15,11 @@
         <div class="upload-form">
             <h2>Upload a file</h2>
             <form action="/upload" method="POST" enctype="multipart/form-data">
-                <input type="file" name="file" required>
+                <label for="file">Choose a file to upload:</label>
+                <input type="file" name="file" id="file" required>
                 <button type="submit">Upload</button>
             </form>
+                      
         </div>
     </div>
 
