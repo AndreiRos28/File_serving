@@ -24,3 +24,11 @@ footer {
     margin-top: 20px;
     color: #777;
 }
+
+.upload-form {
+    margin-top: 20px;
+}
+
+input[type="file"] {
+    margin-bottom: 10px;
+}

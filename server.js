@@ -2,25 +2,64 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const mime = require('mime-types');
+const multer = require('multer');
+const url = require('url');
+const express = require('express');
+const app = express();
 
-const server = http.createServer((req, res) => {
-  let filePath = path.join(__dirname, 'public', req.url === '/' ? 'index.html' : req.url);
+// Set up static file serving
+app.use(express.static(path.join(__dirname, 'public')));
 
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      if (err.code === 'ENOENT') {
-        res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.end('<h1>404 - File Not Found</h1>', 'utf8');
-      } else {
-        res.writeHead(500);
-        res.end(`Server Error: ${err.code}`);
-      }
-    } else {
-      res.writeHead(200, { 'Content-Type': mime.lookup(filePath) });
-      res.end(content, 'utf8');
+// Set up file upload folder
+const uploadFolder = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadFolder)) {
+    fs.mkdirSync(uploadFolder);
+}
+
+// Set up multer for file uploading
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadFolder);  // Store files in the 'uploads' directory
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));  // Generate unique filename
     }
-  });
 });
 
+const upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        // Only allow specific file types (e.g., images, text files)
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'application/pdf'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('File type not allowed'), false);
+        }
+    }
+});
+
+// Route to serve the main page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Route for file upload
+app.post('/upload', upload.single('file'), (req, res) => {
+    res.send(`<h1>File uploaded successfully!</h1><p>File: ${req.file.filename}</p>`);
+});
+
+// Error handling for file upload
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        // Multer-specific errors
+        res.status(500).send(err.message);
+    } else if (err) {
+        // Other errors
+        res.status(500).send('Server Error: ' + err.message);
+    }
+});
+
+// Start the server
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

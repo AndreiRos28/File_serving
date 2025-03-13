@@ -3,10 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Node.js file server</title>
+    <title>Node.js File Server</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to external CSS -->
 </head>
 <body>
-    <h1>Welcome to the Node.js File Server</h1>
+    <div class="container">
+        <h1>Welcome to the Node.js File Server</h1>
+        <p>This is a simple static file server built using Node.js.</p>
+
+        <!-- File Upload Form -->
+        <div class="upload-form">
+            <h2>Upload a file</h2>
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" required>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>Server running on Node.js</p>
+    </footer>
 </body>
 </html>
