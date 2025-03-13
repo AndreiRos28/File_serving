@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const mime = require('mime-types');
 const multer = require('multer');
-const url = require('url');
 const express = require('express');
 const app = express();
 
